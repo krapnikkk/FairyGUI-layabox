@@ -3,6 +3,7 @@ const gulp = require('gulp');
 const inject = require('gulp-inject-string');
 const ts = require('gulp-typescript');
 const merge = require('merge2');
+const minify = require('gulp-minify');
 const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('compile', () => {
@@ -11,6 +12,7 @@ gulp.task('compile', () => {
         tsResult.js.pipe(inject.replace('var fgui;', ''))
             .pipe(inject.replace(/ \|\| \(fgui = \{\}\)/, ''))
             .pipe(inject.prepend(';window.fairygui = window.fgui = {};'))
+            .pipe(minify({ ext: { min: ".min.js" } }))
             .pipe(gulp.dest('./bin')),
         tsResult.dts.pipe(inject.append('import fairygui = fgui;'))
             .pipe(gulp.dest('./bin'))
